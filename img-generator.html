@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Free AI Image Generator</title>
+  <meta name="description" content="Generate AI images online for free using this responsive image generation tool. No API key required!">
+  <meta name="keywords" content="AI image generator, free image tool, generate images, no API key, Lexica, image prompt">
+  <meta property="og:title" content="Free AI Image Generator">
+  <meta property="og:description" content="Generate stunning AI images using prompts with zero cost. No API key required.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://via.placeholder.com/600x400?text=AI+Image+Generator">
+  <meta property="og:url" content="https://yourdomain.com/ai-image-generator">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+  <div class="bg-white rounded-2xl shadow-lg p-8 max-w-xl w-full">
+    <h1 class="text-2xl font-bold mb-4 text-center text-gray-800">Free AI Image Generator</h1>
+    <input
+      type="text"
+      id="prompt"
+      placeholder="Enter your image prompt..."
+      class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4"
+    />
+    <button
+      onclick="generateImage()"
+      class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition"
+    >
+      Generate Image
+    </button>
+    <div id="result" class="mt-6 text-center"></div>
+  </div>
+
+  <script>
+    async function generateImage() {
+      const prompt = document.getElementById('prompt').value;
+      const resultDiv = document.getElementById('result');
+
+      if (!prompt.trim()) {
+        resultDiv.innerHTML = "<p class='text-red-500 mt-4'>Please enter a prompt.</p>";
+        return;
+      }
+
+      resultDiv.innerHTML = "<p class='text-gray-600'>Generating image...</p>";
+
+      try {
+        const response = await fetch(`https://lexica.art/api/v1/search?q=${encodeURIComponent(prompt)}`);
+        const data = await response.json();
+
+        if (data.images && data.images.length > 0) {
+          const imageUrl = data.images[0].src;
+          resultDiv.innerHTML = `
+            <img src="${imageUrl}" alt="Generated image" class="mt-4 rounded-xl shadow-md w-full"/>
+            <p class="text-sm text-gray-500 mt-2">Prompt: ${prompt}</p>
+          `;
+        } else {
+          resultDiv.innerHTML = "<p class='text-red-500 mt-4'>No image found. Try a different prompt.</p>";
+        }
+      } catch (err) {
+        console.error(err);
+        resultDiv.innerHTML = "<p class='text-red-500 mt-4'>Error generating image. Please try again later.</p>";
+      }
+    }
+  </script>
+
+</body>
+</html>
